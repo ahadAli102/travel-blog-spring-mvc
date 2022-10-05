@@ -11,7 +11,8 @@ public class User {
 	@ValidName
 	private String name;
 
-	@Email
+	@Email(message = "Please enter a valid email address")
+	@NotEmpty(message = "Please enter an email address")
 	private String email;
 
 	@StrongPassword

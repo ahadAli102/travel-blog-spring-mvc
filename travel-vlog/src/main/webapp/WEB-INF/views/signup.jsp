@@ -36,14 +36,19 @@ body {
 
 			<p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Sign up</p>
 			<%
-						if ( request.getAttribute("reg_error_occured") != null) {
-						%>
+				if (request.getAttribute("reg_error_occured") != null) {
+			%>
 			<div class="alert alert-danger" role="alert">
 				<form:errors path="user.*" />
 			</div>
 			<%
-							}
-						%>
+				}
+			if (request.getAttribute("reg_exception_occured") != null) {
+			%>
+			<div class="alert alert-danger" role="alert">
+				<%=request.getAttribute("reg_exception_message")%>
+			</div>
+			<%}%>
 
 			<form action="/travel-vlog/signup/process" method="post"
 				class="mx-1 mx-md-4">
@@ -92,14 +97,14 @@ body {
 					</label>
 				</div>
 				<%
-						if ( request.getAttribute("reg_succesfull") != null) {
+					if (request.getAttribute("reg_succesfull") != null) {
 				%>
-							<label
-								class="form-check-label text-white" for="form2Example3"> You have successfully registered Please click on verification mail
-								<a href="/travel-vlog/login">Login</a>
-							</label>
+				<label class="form-check-label text-white" for="form2Example3">
+					You have successfully registered Please click on verification mail
+					<a href="/travel-vlog/login">Login</a>
+				</label>
 				<%
-						}
+					}
 				%>
 
 				<div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
