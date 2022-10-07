@@ -14,7 +14,7 @@ import javax.validation.Payload;
 @Target({ ElementType.METHOD, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface StrongPassword {
-	String message() default "Password should contain a digit ,a lower case letter, an upper case letter, a special character(@,#,*-,$,%,^,&,+,=)";
+	String message() default "Password should contain a digit ,a lower case letter, an upper case letter, a special character(@,*,-,$,^,&,+,=)";
 
 	Class<?>[] groups() default {};
 

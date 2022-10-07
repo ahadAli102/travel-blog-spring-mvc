@@ -65,6 +65,7 @@ public class RegisterController {
 	public ModelAndView verify(@PathVariable("email") String email, @PathVariable("password") String password) {
 		ModelAndView modelAndView = new ModelAndView("verification");
 		System.out.println("reg controller verify: "+email+" "+password);
+		authService.verifyUser(email,password);
 		modelAndView.addObject("reg_verify_succesfull", true);
 		return modelAndView;
 	}

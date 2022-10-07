@@ -4,4 +4,6 @@ import com.ahad.model.User;
 
 public interface AuthDao {
 	public int registerUser(User user);
+
+	public int verifyUser(String email, String password);
 }
