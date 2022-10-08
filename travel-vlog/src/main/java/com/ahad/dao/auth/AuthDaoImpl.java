@@ -20,7 +20,8 @@ public class AuthDaoImpl implements AuthDao {
 	public static final String UPDATE_USER_VERIFY_STATUS = "UPDATE `user_table` SET `verified` = ? where `email` = ? AND `password` = ?";
 	public static final String GET_USER_INFORMATION = "SELECT * FROM `user_table` WHERE `email` = ?";
 	public static final String CREATE_NEW_CREDENTIAL = "INSERT INTO `reset_password_table`(`email`, `credential`, `complete`) VALUES (?, ?, '0')";
-
+	public static final String VALIDATE_USER_CREDENTIAL = "SELECT count(email) AS number FROM `reset_password_table` WHERE `reset_password_table`.`email` = ? AND `reset_password_table`.`credential` = ? AND `reset_password_table`.`complete` = 0;"; 
+	
 	@Override
 	public int registerUser(User user) {
 		System.out.println("dao regestering user " + this);
@@ -101,5 +102,25 @@ public class AuthDaoImpl implements AuthDao {
 			return 0;
 		}
 		
+	}
+
+	@SuppressWarnings("finally")
+	@Override
+	public boolean verifyResetPasswordEmailAndCredential(String email, String credential) {
+		Object[] args = {email, credential};
+		int count = 0;
+		try {
+			count = jdbcTemplate.queryForObject(VALIDATE_USER_CREDENTIAL, new RowMapper<Integer>() {
+				@Override
+				public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+					return rs.getInt("number");
+				}
+			}, args);
+		}
+		catch(Exception e) {
+			e.fillInStackTrace();
+		}finally {
+			return count==1;
+		}
 	}
 }

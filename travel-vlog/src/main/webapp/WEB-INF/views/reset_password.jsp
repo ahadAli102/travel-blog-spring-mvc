@@ -82,6 +82,24 @@ body {
 		</div>
 	</div>
 	<%} %>
+	
+	<%
+	String message2 = null;
+	if (request.getAttribute("reset_email_error") != null) {
+		message2 = request.getAttribute("reset_email_error").toString();
+	%>
+	<div class="container"
+		style="display: flex; justify-content: center; align-items: center; height: 100vh">
+		<div class="w-50">
+			<div class="alert alert-danger" role="alert">
+				<h4 class="alert-heading">Error</h4>
+				<p><%=message2 %></p>
+				<hr>
+				<p class="mb-0">Open that email and click a link to continue further</p>
+			</div>
+		</div>
+	</div>
+	<%} %>
 
 	<div class="row justify-content-center">
 		<div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">

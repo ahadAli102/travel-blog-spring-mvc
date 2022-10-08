@@ -10,4 +10,6 @@ public interface AuthService {
 	public void validateLoginInformation(String email, String password);
 
 	public void sendResetEmail(String email);
+
+	public void verifyResetPasswordEmailAndCredential(String email, String password);
 }

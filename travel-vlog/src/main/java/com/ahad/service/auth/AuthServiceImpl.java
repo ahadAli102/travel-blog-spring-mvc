@@ -93,4 +93,10 @@ public class AuthServiceImpl implements AuthService {
 		
 	}
 
+	@Override
+	public void verifyResetPasswordEmailAndCredential(String email, String credential) {
+		if(!authDao.verifyResetPasswordEmailAndCredential(email, credential))
+			throw new ResetPasswordException("You have clicked wrong link");
+	}
+
 }
