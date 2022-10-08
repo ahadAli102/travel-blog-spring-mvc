@@ -2,12 +2,13 @@ package com.ahad.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.ahad.exception.LoginException;
 import com.ahad.service.auth.AuthService;
 
 @Controller
@@ -27,6 +28,17 @@ public class LoginController {
 	public ModelAndView processForm(@RequestParam("email") String email, @RequestParam("password") String password) {
 		System.out.println(email + "	" + password);
 		ModelAndView modelAndView = new ModelAndView("login");
+		authService.validateLoginInformation(email, password);
+		System.out.println("login done");
+		return modelAndView;
+	}
+	
+	@ExceptionHandler(value=LoginException.class)
+	public ModelAndView loginExceptionHandle(LoginException exception) {
+		ModelAndView modelAndView = new ModelAndView("login");
+		System.out.println("login controller: "+exception.getMessage());
+		modelAndView.addObject("login_exception_message", exception.getMessage());
+		System.out.println("login error");
 		return modelAndView;
 	}
 }

@@ -22,6 +22,16 @@ public class User {
 	@StrongPassword
 	@Size(min = 8, max = 50, message = "Password must be between 8 to 10")
 	private String rePassword;
+	
+	private Boolean verified;
+	
+	public Boolean getVerified() {
+		return verified;
+	}
+
+	public void setVerified(Boolean verified) {
+		this.verified = verified;
+	}
 
 	public String getName() {
 		return name;

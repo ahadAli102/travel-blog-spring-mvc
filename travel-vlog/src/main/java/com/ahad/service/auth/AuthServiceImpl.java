@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.ahad.dao.auth.AuthDao;
 import com.ahad.exception.AuthException;
+import com.ahad.exception.LoginException;
 import com.ahad.exception.VerificationException;
 import com.ahad.model.User;
 import com.ahad.utils.HTMLMail;
@@ -38,8 +39,25 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	public void verifyUser(String email, String password) {
-		if(authDao.verifyUser(email, password) <= 0)
+		if (authDao.verifyUser(email, password) <= 0)
 			throw new VerificationException("Please click on the mail that has been sent to your account");
+	}
+
+	@Override
+	public void validateLoginInformation(String email, String password) {
+		User user = authDao.validateLoginInformation(email);
+		if (user != null) {
+			if(user.getPassword().equals(password)) {
+				if (!user.getVerified()) {
+					throw new LoginException(
+							"User is not verified\nPlease! verify with the link that had been sent to your email");
+				}
+			}else {
+				throw new LoginException("Passwors is not matched");
+			}
+		} else {
+			throw new LoginException("User dosen't exist with this email");
+		}
 	}
 
 }
