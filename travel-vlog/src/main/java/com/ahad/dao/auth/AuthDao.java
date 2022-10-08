@@ -8,4 +8,8 @@ public interface AuthDao {
 	public int verifyUser(String email, String password);
 
 	public User validateLoginInformation(String email);
+
+	public User getUser(String email);
+
+	public int createNewResetPasswordCredential(String email, String credential);
 }

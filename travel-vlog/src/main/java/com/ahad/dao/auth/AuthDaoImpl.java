@@ -19,6 +19,7 @@ public class AuthDaoImpl implements AuthDao {
 	public static final String INSERT_QUERY = "INSERT INTO `user_table`(`email`, `name`, `password`, `verified`) VALUES (?, ?, ?, ?)";
 	public static final String UPDATE_USER_VERIFY_STATUS = "UPDATE `user_table` SET `verified` = ? where `email` = ? AND `password` = ?";
 	public static final String GET_USER_INFORMATION = "SELECT * FROM `user_table` WHERE `email` = ?";
+	public static final String CREATE_NEW_CREDENTIAL = "INSERT INTO `reset_password_table`(`email`, `credential`, `complete`) VALUES (?, ?, '0')";
 
 	@Override
 	public int registerUser(User user) {
@@ -63,5 +64,42 @@ public class AuthDaoImpl implements AuthDao {
 		}finally {
 			return user;
 		}
+	}
+
+	@SuppressWarnings("finally")
+	@Override
+	public User getUser(String email) {
+		Object[] args = { email };
+		User user = null;
+		try {
+			user = jdbcTemplate.queryForObject(GET_USER_INFORMATION, new RowMapper<User>() {
+				@Override
+				public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+					User user = new User();
+					user.setName(rs.getString("name"));
+					user.setEmail(rs.getString("email"));
+					user.setPassword(rs.getString("password"));
+					user.setVerified(rs.getInt("verified") == 1);
+					return user;
+				}
+			}, args);
+		}
+		catch(Exception e) {
+			e.fillInStackTrace();
+		}finally {
+			return user;
+		}
+	}
+
+	@Override
+	public int createNewResetPasswordCredential(String email, String credential) {
+		System.out.println("dao createNewResetPasswordCredential "+email+" "+credential);
+		try {
+			return jdbcTemplate.update(CREATE_NEW_CREDENTIAL, email, credential);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			return 0;
+		}
+		
 	}
 }

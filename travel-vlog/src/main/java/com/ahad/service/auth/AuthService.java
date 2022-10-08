@@ -8,4 +8,6 @@ public interface AuthService {
 	public void verifyUser(String email, String password);
 
 	public void validateLoginInformation(String email, String password);
+
+	public void sendResetEmail(String email);
 }

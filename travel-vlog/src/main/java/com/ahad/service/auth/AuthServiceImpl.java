@@ -1,11 +1,15 @@
 package com.ahad.service.auth;
 
+import java.util.UUID;
+import java.util.regex.Pattern;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ahad.dao.auth.AuthDao;
 import com.ahad.exception.AuthException;
 import com.ahad.exception.LoginException;
+import com.ahad.exception.ResetPasswordException;
 import com.ahad.exception.VerificationException;
 import com.ahad.model.User;
 import com.ahad.utils.HTMLMail;
@@ -17,6 +21,10 @@ public class AuthServiceImpl implements AuthService {
 
 	@Autowired
 	private HTMLMail mail;
+	
+	public static final Pattern VALID_EMAIL_ADDRESS_REGEX = 
+		    Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+
 
 	@Override
 	public void registerUser(User user) {
@@ -33,6 +41,13 @@ public class AuthServiceImpl implements AuthService {
 		String password = user.getPassword();
 		String url = "http://localhost:8080/travel-vlog/signup/verify/" + email + "/" + password;
 		String html = "<h3>Hi!</h3> <br> <p>Wellcome to travel vlog to verify your user account please click below</p> <a href=\""
+				+ url + "\">Chick here</a>";
+		mail.sendMail(email, html);
+	}
+	
+	private void sendResetPasswordMail(String email,String credential) {
+		String url = "http://localhost:8080/travel-vlog/reset/password/" + email + "/" + credential;
+		String html = "<h3>Hi!</h3> <br> <p>To reset password of your user account please click below</p> <a href=\""
 				+ url + "\">Chick here</a>";
 		mail.sendMail(email, html);
 	}
@@ -58,6 +73,24 @@ public class AuthServiceImpl implements AuthService {
 		} else {
 			throw new LoginException("User dosen't exist with this email");
 		}
+	}
+
+	@Override
+	public void sendResetEmail(String email) {
+		if(VALID_EMAIL_ADDRESS_REGEX.matcher(email).find()) {
+			User user = authDao.getUser(email);
+			if (user != null) {
+				String credential = UUID.randomUUID().toString().replace('-','_');
+				if(authDao.createNewResetPasswordCredential(email,credential)>0) {
+					sendResetPasswordMail(email,credential);
+				}
+			} else {
+				throw new ResetPasswordException("User dosen't exist with this email");
+			}
+		}else {
+			throw new ResetPasswordException("Invalid email address");
+		}
+		
 	}
 
 }

@@ -10,7 +10,7 @@ public class LoginException extends RuntimeException {
 
 	@Override
 	public String getMessage() {
-		return "Failed to register user due to " + super.getMessage();
+		return "Failed to login user due to " + super.getMessage();
 	}
 
 }
