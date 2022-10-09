@@ -12,4 +12,6 @@ public interface AuthService {
 	public void sendResetEmail(String email);
 
 	public void verifyResetPasswordEmailAndCredential(String email, String password);
+
+	public void resetPassword(String email, String credential, String password, String rePassword);
 }

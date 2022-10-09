@@ -14,4 +14,6 @@ public interface AuthDao {
 	public int createNewResetPasswordCredential(String email, String credential);
 
 	public boolean verifyResetPasswordEmailAndCredential(String email, String credential);
+
+	public boolean resetPassword(String email, String credential, String password, String rePassword);
 }

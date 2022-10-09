@@ -1,5 +1,7 @@
 package com.ahad.service.auth;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -24,6 +26,9 @@ public class AuthServiceImpl implements AuthService {
 	
 	public static final Pattern VALID_EMAIL_ADDRESS_REGEX = 
 		    Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+	
+	public static final Pattern STRONG_PASSWORD_REGEX = 
+			Pattern.compile("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@\\*\\-$^&+=])(?=\\S+$).{8,}");
 
 
 	@Override
@@ -97,6 +102,37 @@ public class AuthServiceImpl implements AuthService {
 	public void verifyResetPasswordEmailAndCredential(String email, String credential) {
 		if(!authDao.verifyResetPasswordEmailAndCredential(email, credential))
 			throw new ResetPasswordException("You have clicked wrong link");
+	}
+
+	@Override
+	public void resetPassword(String email, String credential, String password, String rePassword) {
+		if(STRONG_PASSWORD_REGEX.matcher(password).find() && STRONG_PASSWORD_REGEX.matcher(password).find()) {
+			if(password.equals(rePassword)) {
+				if(!authDao.resetPassword(email,credential,password,rePassword)) {
+					ResetPasswordException exception = new ResetPasswordException("Failed to change password");
+					Map<String,Object> params = new HashMap<String, Object>();
+					params.put("email", email);
+					params.put("credential", credential);
+					exception.setParams(params);
+					throw exception;
+				}
+			}else {
+				ResetPasswordException exception = new ResetPasswordException("Passwords don't matched");
+				Map<String,Object> params = new HashMap<String, Object>();
+				params.put("email", email);
+				params.put("credential", credential);
+				exception.setParams(params);
+				throw exception;
+			}
+		}else {
+			ResetPasswordException exception = new ResetPasswordException("Password not strong");
+			Map<String,Object> params = new HashMap<String, Object>();
+			params.put("email", email);
+			params.put("credential", credential);
+			exception.setParams(params);
+			throw exception;
+		}
+		
 	}
 
 }

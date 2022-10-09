@@ -144,7 +144,8 @@ body {
 			if (request.getAttribute("reset_password_form") != null) {
 			%>
 			<form action="/travel-vlog/reset/password/submit" method="post">
-
+				<input type="hidden" name="email" value="<%= request.getAttribute("email")%>"/>
+				<input type="hidden" name="credential" value="<%= request.getAttribute("credential")%>"/>
 				<!-- Password input -->
 				<div class="form-outline mb-3">
 					<input type="password" name="password" id="form3Example4"

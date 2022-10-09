@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.ahad.exception.ResetPasswordException;
 import com.ahad.model.User;
 
 @Repository
@@ -18,9 +20,11 @@ public class AuthDaoImpl implements AuthDao {
 
 	public static final String INSERT_QUERY = "INSERT INTO `user_table`(`email`, `name`, `password`, `verified`) VALUES (?, ?, ?, ?)";
 	public static final String UPDATE_USER_VERIFY_STATUS = "UPDATE `user_table` SET `verified` = ? where `email` = ? AND `password` = ?";
+	public static final String UPDATE_USER_PASSWORD = "UPDATE `user_table` SET `password` = ? where `email` = ?";
 	public static final String GET_USER_INFORMATION = "SELECT * FROM `user_table` WHERE `email` = ?";
 	public static final String CREATE_NEW_CREDENTIAL = "INSERT INTO `reset_password_table`(`email`, `credential`, `complete`) VALUES (?, ?, '0')";
-	public static final String VALIDATE_USER_CREDENTIAL = "SELECT count(email) AS number FROM `reset_password_table` WHERE `reset_password_table`.`email` = ? AND `reset_password_table`.`credential` = ? AND `reset_password_table`.`complete` = 0;"; 
+	public static final String VALIDATE_USER_PASSWORD_CREDENTIAL = "SELECT count(email) AS number FROM `reset_password_table` WHERE `reset_password_table`.`email` = ? AND `reset_password_table`.`credential` = ? AND `reset_password_table`.`complete` = 0 ORDER BY `reset_password_table`.`time` DESC LIMIT 1"; 
+	public static final String COMPLETE_USER_PASSWORD_CREDENTIAL = "UPDATE `reset_password_table` SET `reset_password_table`.`complete` = 1 WHERE `reset_password_table`.`email` = ? AND `reset_password_table`.`credential` = ?"; 
 	
 	@Override
 	public int registerUser(User user) {
@@ -110,7 +114,7 @@ public class AuthDaoImpl implements AuthDao {
 		Object[] args = {email, credential};
 		int count = 0;
 		try {
-			count = jdbcTemplate.queryForObject(VALIDATE_USER_CREDENTIAL, new RowMapper<Integer>() {
+			count = jdbcTemplate.queryForObject(VALIDATE_USER_PASSWORD_CREDENTIAL, new RowMapper<Integer>() {
 				@Override
 				public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
 					return rs.getInt("number");
@@ -121,6 +125,36 @@ public class AuthDaoImpl implements AuthDao {
 			e.fillInStackTrace();
 		}finally {
 			return count==1;
+		}
+	}
+
+	@Override
+	@Transactional
+	public boolean resetPassword(String email, String credential, String password, String rePassword) {
+		changePassword(email,password);
+		completeCredential(email,credential);
+		return true;
+	}
+
+	private boolean changePassword(String email, String password) {
+		//"UPDATE `user_table` SET `password` = ? where `email` = ?"
+		//jdbcTemplate.
+		int x = jdbcTemplate.update(UPDATE_USER_PASSWORD, password, email);
+		System.out.println("dao password change "+email+"    "+password+"    "+x);
+		if(x == 1) {
+			return true;
+		}else {
+			throw new ResetPasswordException("Failed to change password");
+		}
+	}
+
+	private boolean completeCredential(String email, String credential) {
+		int x = jdbcTemplate.update(COMPLETE_USER_PASSWORD_CREDENTIAL,email,credential);
+		System.out.println("dao complete credential "+email+"    "+credential+"    "+x);
+		if(x == 1) {
+			return true;
+		}else {
+			throw new ResetPasswordException("Failed to change password");
 		}
 	}
 }
