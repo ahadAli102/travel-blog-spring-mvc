@@ -1,5 +1,6 @@
 package com.ahad.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,11 +11,14 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.ahad.model.User;
+import com.ahad.service.user.UserService;
 
 @Controller
 @RequestMapping("/profile")
 @SessionAttributes("login_user")
 public class ProfileController {
+	@Autowired
+	private UserService userService;
 	
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView getRegPage(@ModelAttribute("login_user") User user) {
@@ -36,6 +40,7 @@ public class ProfileController {
 		System.out.println(user);
 		System.out.println(reqFile.getOriginalFilename());
 		System.out.println(reqFile.getSize());
+		userService.saveProfileImage(reqFile, user.getEmail());
 		return modelAndView;
 	}
 	
