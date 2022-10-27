@@ -6,13 +6,16 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.ahad.exception.LoginException;
+import com.ahad.model.User;
 import com.ahad.service.auth.AuthService;
 
 @Controller
 @RequestMapping("/login")
+@SessionAttributes("login_user")
 public class LoginController {
 	
 	@Autowired
@@ -27,9 +30,12 @@ public class LoginController {
 	@RequestMapping(path = "/process",method = RequestMethod.POST)
 	public ModelAndView processForm(@RequestParam("email") String email, @RequestParam("password") String password) {
 		System.out.println(email + "	" + password);
-		ModelAndView modelAndView = new ModelAndView("login");
+		ModelAndView modelAndView = new ModelAndView("redirect:/home");
 		authService.validateLoginInformation(email, password);
 		System.out.println("login done");
+		User user = new User();
+		user.setEmail(email);
+		modelAndView.addObject("login_user", user);
 		return modelAndView;
 	}
 	
