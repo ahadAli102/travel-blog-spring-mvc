@@ -64,13 +64,16 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	@Override
-	public void validateLoginInformation(String email, String password) {
+	public User validateLoginInformation(String email, String password) {
 		User user = authDao.validateLoginInformation(email);
 		if (user != null) {
 			if(user.getPassword().equals(password)) {
 				if (!user.getVerified()) {
 					throw new LoginException(
 							"User is not verified\nPlease! verify with the link that had been sent to your email");
+				}
+				else {
+					return user;
 				}
 			}else {
 				throw new LoginException("Passwors is not matched");

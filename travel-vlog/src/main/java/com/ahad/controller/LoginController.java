@@ -31,9 +31,8 @@ public class LoginController {
 	public ModelAndView processForm(@RequestParam("email") String email, @RequestParam("password") String password) {
 		System.out.println(email + "	" + password);
 		ModelAndView modelAndView = new ModelAndView("redirect:/home");
-		authService.validateLoginInformation(email, password);
+		User user = authService.validateLoginInformation(email, password);
 		System.out.println("login done");
-		User user = new User();
 		user.setEmail(email);
 		modelAndView.addObject("login_user", user);
 		return modelAndView;

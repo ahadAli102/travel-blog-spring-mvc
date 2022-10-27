@@ -67,7 +67,10 @@
 		
     </bean>
     
-    <bean id = "methodVelidation" class="org.springframework.validation.beanvalidation.MethodValidationPostProcessor" />
+    <bean id = "methodVelidation" 
+    	class="org.springframework.validation.beanvalidation.MethodValidationPostProcessor" />
 	
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
 
 </beans>
