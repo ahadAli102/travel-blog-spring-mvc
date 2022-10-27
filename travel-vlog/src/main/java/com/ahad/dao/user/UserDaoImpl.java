@@ -3,11 +3,14 @@ package com.ahad.dao.user;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Base64;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -15,7 +18,7 @@ public class UserDaoImpl implements UserDao {
 	
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
-	
+	private static final String GET_USER_IMAGE = "SELECT * FROM profile_image WHERE profile_image.email=? ORDER BY profile_image.id DESC";
 	private static final String INSERT_IMAGE = "INSERT INTO `profile_image` (`id`, `name`, `type`, `image`,  `email`) VALUES (NULL, ?, ?, ?, ?)";
 
 	@Override
@@ -33,6 +36,19 @@ public class UserDaoImpl implements UserDao {
 				
 			}
 		});
+	}
+
+	@Override
+	public String getImage(String email) {
+		//myImage = "data:" + image.getType() + ";base64," + image.getTextImage();
+		return jdbcTemplate.queryForObject(GET_USER_IMAGE, new RowMapper<String>() {
+
+			@Override
+			public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+				return "data:" + rs.getString("type") + ";base64," 
+						+ Base64.getEncoder().encodeToString(rs.getBytes("image"));
+			}
+		}, new Object[] {email});
 	}
 
 }

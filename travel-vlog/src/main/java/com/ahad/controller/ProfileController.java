@@ -29,6 +29,7 @@ public class ProfileController {
 			modelAndView.setViewName("redirect:/login");
 		}else {
 			modelAndView.setViewName("profile");
+			modelAndView.addObject("image", userService.getImage(user));
 		}
 		return modelAndView;
 	}
