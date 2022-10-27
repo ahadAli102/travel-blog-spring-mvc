@@ -101,6 +101,47 @@ body {
 				</form>
 			</div>
 		</div>
+		<div class="card container mt-2 bg-secondary bg-gradient">
+			<h3 class="text-center">Add Vlog</h3>
+			<form method="post" class="row row-cols-1 row-cols-md-2 g-4 mt-4" enctype="multipart/form-data"
+				  action="/travel-vlog/profile/uploadVlog">
+				<!-- user profile -->
+				<div class="col mt-3">
+					<div class="d-flex flex-row align-items-center mb-4">
+						<i class="fas fa-user fa-lg me-3 fa-fw"></i>
+						<div class="form-outline flex-fill mb-0">
+							<input type="text" name="location" id="form3Example1c"
+								class="form-control" /> <label class="form-label"
+								for="form3Example1c">Location</label>
+						</div>
+				    </div>
+				    <div class="d-flex flex-row align-items-center mb-4 ">
+						<i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
+						<div class="form-outline flex-fill mb-0 rows=3">
+							<textarea class="form-control" id="form3Example3c" rows="3"
+								name="description"></textarea>
+							<label class="form-label" for="form3Example3c">Description</label>
+						</div>
+					</div>
+				</div>
+				<div class="col mt-3">
+					<div class="row pl-1 pe-2">
+			            <label for="formFileMultipleImage" class="form-label">Select images</label>
+					    <input class="form-control" accept="image/*" name="images" type="file" id="formFileMultipleImage" multiple />
+			        </div>
+			        <div class="row pl-1 pe-2">
+			            <label for="formFileMultipleVideo" class="form-label">Select Videos</label>
+					    <input class="form-control" accept="video/*" name="videos" type="file" id="formFileMultipleVideo" multiple />
+			        </div>
+			        <div class="row mt-1 pl-1 pe-2">
+			        	<div class="text-center">
+			      	    	<button type="submit" class="btn btn-primary text-center" style="width: 100px">UPLOAD</button>
+			        	</div>
+			        </div>
+				</div>
+			</form>
+		
+		</div>
 	</div>
 		
 
