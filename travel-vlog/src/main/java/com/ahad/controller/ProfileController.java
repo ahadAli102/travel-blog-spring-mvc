@@ -1,12 +1,13 @@
 package com.ahad.controller;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,16 +16,21 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.ahad.exception.VlogException;
 import com.ahad.model.User;
 import com.ahad.model.Vlog;
 import com.ahad.service.user.UserService;
+import com.ahad.service.vlog.VlogService;
 
 @Controller
 @RequestMapping("/profile")
-@SessionAttributes("login_user")
+@SessionAttributes({"login_user","image"})
 public class ProfileController {
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private VlogService vlogService;
 	
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView getRegPage(@ModelAttribute("login_user") User user) {
@@ -41,28 +47,42 @@ public class ProfileController {
 	}
 	
 	@RequestMapping(path = "/uploadImage", method= RequestMethod.POST)
-	public ModelAndView uploadProfileImage(@RequestParam("file") CommonsMultipartFile reqFile,@ModelAttribute("login_user") User user) {
+	public String uploadProfileImage(@RequestParam("file") CommonsMultipartFile reqFile,@ModelAttribute("login_user") User user) {
 		System.out.println("profile upload");
-		ModelAndView modelAndView = new ModelAndView("redirect:/profile");
 		System.out.println(user);
 		System.out.println(reqFile.getOriginalFilename());
 		System.out.println(reqFile.getSize());
 		userService.saveProfileImage(reqFile, user.getEmail());
-		return modelAndView;
+		return "redirect:/profile";
 	}
 	
 	@RequestMapping(path = "/uploadVlog", method= RequestMethod.POST, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-	public ModelAndView uploadVlog(@ModelAttribute @Valid Vlog vlog, BindingResult bindingResult,
+	public Object uploadVlog(@ModelAttribute @Valid Vlog vlog, BindingResult bindingResult,
 			@RequestParam("images") CommonsMultipartFile[] images,
-			@RequestParam("videos") CommonsMultipartFile[] videos) {
+			@RequestParam("videos") CommonsMultipartFile[] videos,
+			@ModelAttribute("login_user") User user,
+			HttpServletRequest req) {
 		System.out.println("profile upload vlog "+images.length+" "+videos.length);
 		System.out.println("profile upload vlog "+images[0].getOriginalFilename()+" "+videos[0].getOriginalFilename());
+		ModelAndView modelAndView = new ModelAndView("/profile");
 		if(bindingResult.hasErrors()) {
-			System.out.println("Number of errors : "+bindingResult.getErrorCount());
-			for(ObjectError objectError : bindingResult.getAllErrors() )
-				System.out.println(objectError);
+			System.out.println("profile coltroller: errors "+bindingResult.getErrorCount());
+			req.getSession().setAttribute("profile_add_vlog_value_error", true);
+			return modelAndView;
 		}
-		ModelAndView modelAndView = new ModelAndView("redirect:/profile");
+		else {
+			vlogService.addVlog(vlog, images, videos, user.getEmail());
+			System.out.println("profile upload vlog added");
+			System.out.println("profile upload vlog page showed");
+			return "redirect:/profile";
+		}
+	}
+	
+	@ExceptionHandler(value=VlogException.class)
+	public ModelAndView vlogExceptionHandle(VlogException exception,HttpServletRequest req) {
+		ModelAndView modelAndView = new ModelAndView("/profile");
+		System.out.println("profile controller VlogException: "+exception.getMessage());
+		req.getSession().setAttribute("profile_add_vlog_exception_message", exception.getMessage());
 		return modelAndView;
 	}
 	

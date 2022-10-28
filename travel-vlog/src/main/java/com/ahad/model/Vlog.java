@@ -3,9 +3,6 @@ package com.ahad.model;
 import java.util.List;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
-
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 public class Vlog {
 	

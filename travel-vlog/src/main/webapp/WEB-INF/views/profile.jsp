@@ -3,6 +3,8 @@
 <%@page import="java.util.Map"%>
 <%@page import="com.ahad.model.User"%>
 <%@include file="profile_nav.jsp"%>
+<%@ page isELIgnored="false"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <html>
 <head>
 <title>Profile</title>
@@ -28,7 +30,7 @@ body {
 	<%
 		User user =(User) request.getSession().getAttribute("login_user");
 		Map<String, Object> rating = null;
-		String myImage = String.valueOf(request.getAttribute("image"));
+		String myImage = String.valueOf(request.getSession().getAttribute("image"));
 	
 	%>
 	<div class="container pt-1 pb-3">
@@ -103,6 +105,23 @@ body {
 		</div>
 		<div class="card container mt-2 bg-secondary bg-gradient">
 			<h3 class="text-center">Add Vlog</h3>
+			<%
+			if (request.getSession().getAttribute("profile_add_vlog_value_error") != null) {
+				System.out.println("profile_add_vlog_value_error");
+			%>
+			<div class="alert alert-danger" role="alert">
+				<form:errors path="vlog.*" />
+			</div>
+			<%request.getSession().removeAttribute("profile_add_vlog_value_error");
+			}%>
+			<%
+			if (request.getSession().getAttribute("profile_add_vlog_exception_message") != null) {
+			%>
+			<div class="alert alert-danger" role="alert">
+				<%="please select image and videos"%>
+			</div>
+			<%request.getSession().removeAttribute("profile_add_vlog_exception_message");
+			}%>
 			<form method="post" class="row row-cols-1 row-cols-md-2 g-4 mt-4" enctype="multipart/form-data"
 				  action="/travel-vlog/profile/uploadVlog">
 				<!-- user profile -->
@@ -145,13 +164,14 @@ body {
 	</div>
 		
 
+	<script src="webjars/jquery/1.9.1/jquery.min.js"></script>
+	<script src="webjars/bootstrap/5.1.3/js/bootstrap.min.js"></script>
 	<script
 		src="${pageContext.request.contextPath}/webjars/jquery/1.9.1/jquery.min.js"
 		defer></script>
 	<script
 		src="${pageContext.request.contextPath}/webjars/bootstrap/5.1.3/js/bootstrap.min.js"
 		defer></script>
-
 
 </body>
 </html>

@@ -52,6 +52,3 @@
 		defer></script>
 </body>
 </html>
-
-</body>
-</html>
