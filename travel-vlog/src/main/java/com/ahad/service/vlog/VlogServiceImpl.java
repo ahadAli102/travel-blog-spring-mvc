@@ -1,5 +1,9 @@
 package com.ahad.service.vlog;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -29,6 +33,22 @@ public class VlogServiceImpl implements VlogService{
 				throw new VlogException("unknown error occured");
 			}
 		}
+	}
+
+	@Override
+	public List<Vlog> getUserVlogs(String email) {
+		Map<String, Vlog> vlogMap = vlogDao.getUserVlogs(email);
+		List<Vlog> userVlogs = new ArrayList<Vlog>(vlogMap.size());
+		if(vlogMap!=null) {
+			for(String key : vlogMap.keySet()) {
+				Vlog vlog = vlogMap.get(key);
+				userVlogs.add(vlog);
+				System.out.println(vlog.getId());
+				System.out.println(vlog.getImageUrl().get(0));
+				System.out.println(vlog.getVideoUrl().get(0)+"\n\n\n");
+			}
+		}
+		return userVlogs;
 	}
 	
 }

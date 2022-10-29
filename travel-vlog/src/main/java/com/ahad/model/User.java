@@ -25,6 +25,16 @@ public class User {
 	
 	private Boolean verified;
 	
+	private String image;
+	
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+
 	public Boolean getVerified() {
 		return verified;
 	}

@@ -39,8 +39,16 @@ body {
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 					<li class="nav-item"><a class="nav-link active"
-						aria-current="page" href="home">Home</a></li>
-					<li class="nav-item"><a class="nav-link" href="profile">Profile</a></li>
+						aria-current="page"
+						href="http://localhost:8080/travel-vlog/home">Feed</a></li>
+
+					<li class="nav-item"><a class="nav-link active"
+						aria-current="page"
+						href="http://localhost:8080/travel-vlog/profile">Profile</a></li>
+					
+					<li class="nav-item"><a class="nav-link active"
+						aria-current="page"
+						href="http://localhost:8080/travel-vlog/vlogs/my">My Vlog</a></li>
 				</ul>
 				<form class="d-flex">
 					<a href="https://www.linkedin.com/in/ahad-ali-66266b193/"> <img

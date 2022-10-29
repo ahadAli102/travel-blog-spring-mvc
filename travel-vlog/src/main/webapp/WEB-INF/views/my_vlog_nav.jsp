@@ -25,11 +25,11 @@
 						aria-current="page"
 						href="http://localhost:8080/travel-vlog/home">Feed</a></li>
 
-					<li class="nav-item"><a class="nav-link disabled"
+					<li class="nav-item"><a class="nav-link active"
 						aria-current="page"
 						href="http://localhost:8080/travel-vlog/profile">Profile</a></li>
 					
-					<li class="nav-item"><a class="nav-link active"
+					<li class="nav-item"><a class="nav-link disabled"
 						aria-current="page"
 						href="http://localhost:8080/travel-vlog/vlogs/my">My Vlog</a></li>
 
