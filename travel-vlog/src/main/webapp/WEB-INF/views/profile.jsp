@@ -41,7 +41,7 @@ body {
 				<div class="card p-4">
 					<div class=" text-black">
 						<div class="flex-shrink-0">
-							<img src=<%=myImage%> alt="Generic placeholder image"
+							<img src="http://localhost:8080/travel-vlog/FetchFile?fileName=<%=myImage%>" alt="Generic placeholder image"
 								class="img-fluid" style="width: 680px; border-radius: 10px;">
 						</div>
 						<div class="flex-grow-1 ms-3">

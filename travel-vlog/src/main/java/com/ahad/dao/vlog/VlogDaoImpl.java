@@ -34,16 +34,15 @@ public class VlogDaoImpl implements VlogDao {
 	private static final String GET_VLOG_ID = "SELECT `id` FROM `vlog_table` WHERE vlog_table.eamil = ? AND vlog_table.location = ? AND vlog_table.description = ? ORDER BY vlog_table.id DESC LIMIT 1;";
 	private static final String INSERT_VLOG_IMAGE = "INSERT INTO `vlog_videos_table`(`vlogId`, `url`) VALUES (?,?)";
 	private static final String INSERT_VLOG_VIDEO = "INSERT INTO `vlog_images_table`(`vlogId`, `url`) VALUES (?,?)";
-	private static final String GET_USER_VLOG 
-			= "SELECT vlog_table.id,vlog_table.location, vlog_table.description,  \n"
-			+ "vlog_images_table.url AS vlog_image,  \n" + "vlog_videos_table.url AS vlog_video,  \n"
-			+ "user_table.name, user_table.email,  \n"
-			+ "profile_image.image as user_image,profile_image.type AS profile_image_type   \n" 
-			+ "FROM user_table   \n"
-			+ "INNER JOIN vlog_table ON vlog_table.eamil = user_table.email AND vlog_table.eamil = ?   \n"
+	private static final String GET_USER_VLOG = "SELECT vlog_table.id,vlog_table.location, vlog_table.description, \n"
+			+ "vlog_images_table.url AS vlog_image,  		\n" + "vlog_videos_table.url AS vlog_video, \n"
+			+ "user_table.name, user_table.email,  \n" + "profile_image.name as user_image_name   \n"
+			+ "FROM user_table    \n"
+			+ "INNER JOIN vlog_table ON vlog_table.eamil = user_table.email AND vlog_table.eamil = ? \n"
 			+ "INNER JOIN vlog_images_table ON vlog_images_table.vlogId = vlog_table.id   \n"
 			+ "INNER JOIN vlog_videos_table ON vlog_videos_table.vlogId = vlog_images_table.vlogId  \n"
-			+ "INNER JOIN profile_image ON profile_image.email = user_table.email ";
+			+ "INNER JOIN profile_image ON profile_image.email = user_table.email  AND profile_image.id = (SELECT MAX(profile_image.id) FROM profile_image GROUP BY profile_image.email) \n"
+			+ "GROUP BY (vlog_table.id) \n" + "ORDER BY vlog_table.id DESC;";
 
 	@Override
 	@Transactional
@@ -65,8 +64,7 @@ public class VlogDaoImpl implements VlogDao {
 					"" + vlogId + "_videos_" + video.getOriginalFilename());
 			try {
 				FileUtils.writeByteArrayToFile(outputFile, video.getBytes());
-				url.add("G:\\eclips-spring-mvc\\travel-vlog-content" + "\\" + vlogId + "_videos_"
-						+ video.getOriginalFilename());
+				url.add("" + vlogId + "_videos_" + video.getOriginalFilename());
 			} catch (IOException e) {
 				e.printStackTrace();
 				throw new RuntimeException(e.getMessage());
@@ -95,8 +93,7 @@ public class VlogDaoImpl implements VlogDao {
 					"" + vlogId + "_image_" + image.getOriginalFilename());
 			try {
 				FileUtils.writeByteArrayToFile(outputFile, image.getBytes());
-				url.add("G:\\eclips-spring-mvc\\travel-vlog-content" + "\\" + vlogId + "_image_"
-						+ image.getOriginalFilename());
+				url.add("" + vlogId + "_image_" + image.getOriginalFilename());
 			} catch (IOException e) {
 				e.printStackTrace();
 				throw new RuntimeException(e.getMessage());
@@ -136,7 +133,6 @@ public class VlogDaoImpl implements VlogDao {
 
 	@Override
 	public Map<String, Vlog> getUserVlogs(String email) {
-
 		return jdbcTemplate.query(GET_USER_VLOG, new ResultSetExtractor<Map<String, Vlog>>() {
 
 			@Override
@@ -150,8 +146,8 @@ public class VlogDaoImpl implements VlogDao {
 
 					String vlogVideo = rs.getString("vlog_video");
 
-					String userImage = "data:" + rs.getString("profile_image_type") + ";base64,"
-							+ Base64.getEncoder().encodeToString(rs.getBytes("user_image"));
+					String userImage = rs.getString("user_image_name");
+					System.out.println("vlog dao user image: " + userImage);
 
 					if (vlogMap.containsKey("" + id)) {
 						vlogMap.get("" + id).getImageUrl().add(vlogImage);
@@ -178,11 +174,11 @@ public class VlogDaoImpl implements VlogDao {
 						videoUrl.add(vlogVideo);
 						vlog.setImageUrl(imageUrl);
 						vlog.setVideoUrl(videoUrl);
-						vlogMap.put(""+id, vlog);
+						vlogMap.put("" + id, vlog);
 					}
 				}
 				return vlogMap;
 			}
-		}, new Object[] {email});
+		}, new Object[] { email });
 	}
 }

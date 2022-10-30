@@ -27,6 +27,9 @@ public class VlogServiceImpl implements VlogService{
 		}
 		else {
 			try {
+				if(email == null) {
+					email = "ahad15-12484@diu.edu.bd";
+				}
 				vlogDao.addVlog(vlog, images, videos, email);
 			}catch(Exception e) {
 				System.out.println(e.fillInStackTrace());
@@ -43,7 +46,7 @@ public class VlogServiceImpl implements VlogService{
 			for(String key : vlogMap.keySet()) {
 				Vlog vlog = vlogMap.get(key);
 				userVlogs.add(vlog);
-				System.out.println(vlog.getId());
+				System.out.println(vlog);
 				System.out.println(vlog.getImageUrl().get(0));
 				System.out.println(vlog.getVideoUrl().get(0)+"\n\n\n");
 			}

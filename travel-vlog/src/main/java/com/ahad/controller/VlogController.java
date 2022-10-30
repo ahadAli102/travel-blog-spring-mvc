@@ -30,13 +30,14 @@ public class VlogController {
 	
 	@RequestMapping(path = "/my",method = RequestMethod.GET)
 	public ModelAndView getRegPage(@ModelAttribute("login_user") User user) {
+		System.gc();
 		ModelAndView modelAndView = new ModelAndView();
 		System.out.println("vlogs my = "+user);
 		if(user.getEmail()==null) {
 			modelAndView.setViewName("redirect:/login");
 		}else {
 			modelAndView.setViewName("my_vlog");
-			vlogService.getUserVlogs(user.getEmail());
+			modelAndView.addObject("user_vlogs",vlogService.getUserVlogs(user.getEmail()));
 		}
 		return modelAndView;
 	}
