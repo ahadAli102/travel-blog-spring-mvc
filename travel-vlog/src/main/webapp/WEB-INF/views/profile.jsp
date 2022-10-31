@@ -54,11 +54,19 @@ body {
 									<p class="mb-0"><%= 50%></p>
 								</div>
 								<div class="px-3">
-									<p class="small text-muted mb-1">Ratings</p>
+									<p class="small text-muted mb-1">Vlog Ratings</p>
 									<p class="mb-0"><%= 100%></p>
 								</div>
 								<div>
-									<p class="small text-muted mb-1">Rating</p>
+									<p class="small text-muted mb-1">Vlog Rating</p>
+									<p class="mb-0"><%= 5.10%></p>
+								</div>
+								<div class="px-3">
+									<p class="small text-muted mb-1">Author ratings</p>
+									<p class="mb-0"><%= 100%></p>
+								</div>
+								<div>
+									<p class="small text-muted mb-1">Author rating</p>
 									<p class="mb-0"><%= 5.10%></p>
 								</div>
 							</div>

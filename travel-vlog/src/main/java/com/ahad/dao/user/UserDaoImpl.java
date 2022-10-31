@@ -21,7 +21,14 @@ public class UserDaoImpl implements UserDao {
 	private static final String GET_USER_IMAGE = "SELECT * FROM profile_image WHERE profile_image.email=? ORDER BY profile_image.id DESC LIMIT 1";
 	private static final String INSERT_IMAGE = "INSERT INTO `profile_image` (`id`, `name`,  `email`) VALUES (NULL, ?, ?)";
 	private static final String RATE_AUTHOR = "INSERT INTO `author_rating_table`(`author_email`, `rater_email`, `rating`) VALUES (?, ?, ?)";
-	
+	private static final String USER_RATING =
+			"SELECT \n" + 
+			"    COUNT(author_rating_table.author_email) AS author_count_rating, \n" + 
+			"    AVG(author_rating_table.rating) AS author_avg_rating \n" + 
+			"FROM \n" + 
+			"    author_rating_table \n" + 
+			"WHERE \n" + 
+			"    author_rating_table.author_email = ?;";
 	@Override
 	public int saveProfileImage(byte[] image, String fileName, String type, String email) {
 		String outputFileName = addImageToFile(image, fileName, email);

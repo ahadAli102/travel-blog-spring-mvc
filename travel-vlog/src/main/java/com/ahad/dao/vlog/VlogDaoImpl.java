@@ -62,7 +62,14 @@ public class VlogDaoImpl implements VlogDao {
 			"GROUP BY vlog_images_table.url, vlog_videos_table.url;";
 	private static final String RATE_VLOG = "INSERT INTO `vlog_rating_table`(`vlog_id`, `rater_email`, `rating`) VALUES (?, ?, ?)";
 	private static final String RATING_OF_VLOG = "SELECT AVG(vlog_rating_table.rating) AS avg_rating, COUNT(vlog_rating_table.vlog_id) AS total_votes FROM vlog_rating_table WHERE vlog_rating_table.vlog_id = ?;";
-	
+	private static final String USER_VLOG_RATING = 
+			"SELECT \n" + 
+			"    COUNT(DISTINCT(vlog_table.id)) AS total_vlogs, \n" + 
+			"    COUNT(vlog_rating_table.vlog_id) AS vlog_count_rating, \n" + 
+			"    AVG(vlog_rating_table.rating) AS vlog_avg_rating \n" + 
+			"FROM \n" + 
+			"    vlog_table \n" + 
+			"JOIN vlog_rating_table ON vlog_rating_table.vlog_id = vlog_table.id AND vlog_table.eamil = ?;";
 	@Override
 	@Transactional
 	public void addVlog(Vlog vlog, CommonsMultipartFile[] images, CommonsMultipartFile[] videos, String email) {
