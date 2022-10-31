@@ -7,4 +7,5 @@ import com.ahad.model.User;
 public interface UserService {
 	public void saveProfileImage(CommonsMultipartFile reqFile, String email);
 	public String getImage(User user);
+	public String rateAuthor(int rating, String authorEmail, String raterEmail);
 }

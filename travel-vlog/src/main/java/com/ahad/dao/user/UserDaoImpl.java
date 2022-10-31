@@ -1,13 +1,10 @@
 package com.ahad.dao.user;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Base64;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +20,8 @@ public class UserDaoImpl implements UserDao {
 	private JdbcTemplate jdbcTemplate;
 	private static final String GET_USER_IMAGE = "SELECT * FROM profile_image WHERE profile_image.email=? ORDER BY profile_image.id DESC LIMIT 1";
 	private static final String INSERT_IMAGE = "INSERT INTO `profile_image` (`id`, `name`,  `email`) VALUES (NULL, ?, ?)";
-
+	private static final String RATE_AUTHOR = "INSERT INTO `author_rating_table`(`author_email`, `rater_email`, `rating`) VALUES (?, ?, ?)";
+	
 	@Override
 	public int saveProfileImage(byte[] image, String fileName, String type, String email) {
 		String outputFileName = addImageToFile(image, fileName, email);
@@ -60,5 +58,8 @@ public class UserDaoImpl implements UserDao {
 			}
 		}, new Object[] {email});
 	}
-
+	@Override
+	public void rateAuthor(int rating, String authorEmail, String raterEmail) {
+		jdbcTemplate.update(RATE_AUTHOR, authorEmail, raterEmail, rating);
+	}
 }

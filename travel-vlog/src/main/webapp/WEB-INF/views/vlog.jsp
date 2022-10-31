@@ -137,7 +137,7 @@ body {
 			</div>
 		</div>
 		<div class="row card p-3">
-			<form action="/travel-vlog/vlogs/rate-author card-body" method="POST">
+			<form action="/travel-vlog/vlogs/rate-author" method="POST">
 				<label for="customRange2" class="form-label">Rate the author (OUT OF 10)</label> 
 				<input 
 					type="range" class="form-range" min="1" max="10" id="customRange2" name="rating"> 

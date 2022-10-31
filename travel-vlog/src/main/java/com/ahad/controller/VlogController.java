@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.ahad.exception.VlogException;
 import com.ahad.model.User;
 import com.ahad.model.Vlog;
+import com.ahad.service.user.UserService;
 import com.ahad.service.vlog.VlogService;
 
 @Controller
@@ -28,6 +29,9 @@ import com.ahad.service.vlog.VlogService;
 public class VlogController {
 	@Autowired
 	private VlogService vlogService;
+	
+	@Autowired
+	private UserService userService;
 	
 	@RequestMapping(path = "/{vlogId}",method = RequestMethod.GET)
 	public ModelAndView displaySIngleVlog(@ModelAttribute("login_user") User user, @PathVariable("vlogId") int vlogId) {
@@ -91,6 +95,25 @@ public class VlogController {
 		}else {
 			modelAndView.setViewName("redirect:/vlogs/"+vlogId);
 			req.getSession().setAttribute("rate_vlog_status", vlogService.rateVlog(vlogId,rating,user.getEmail()));
+		}
+		return modelAndView;
+	}
+	
+	@RequestMapping(path = "/rate-author", method= RequestMethod.POST)
+	public ModelAndView rateAuthor(
+			@RequestParam("vlogId") int vlogId,
+			@RequestParam("rating") int rating,
+			@RequestParam("authorEmail") String authorEmail, 
+			@ModelAttribute("login_user") User user,
+			HttpServletRequest req) {
+		
+		ModelAndView modelAndView = new ModelAndView();
+		System.out.println("vlogs my = "+user);
+		if(user.getEmail()==null) {
+			modelAndView.setViewName("redirect:/login");
+		}else {
+			modelAndView.setViewName("redirect:/vlogs/"+vlogId);
+			req.getSession().setAttribute("rate_author_status", userService.rateAuthor(rating,authorEmail,user.getEmail()));
 		}
 		return modelAndView;
 	}

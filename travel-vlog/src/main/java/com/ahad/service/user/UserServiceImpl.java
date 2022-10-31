@@ -30,4 +30,16 @@ public class UserServiceImpl implements UserService {
 			return "";
 		}
 	}
+
+	@Override
+	public String rateAuthor(int rating, String authorEmail, String raterEmail) {
+		try {
+			System.out.println("user dao rate author: aurhor:"+authorEmail+" rater:"+raterEmail+" rating:"+rating);
+			dao.rateAuthor(rating,authorEmail,raterEmail);
+			return "Your rating have been stored succesfully";
+		}catch(Exception e) {
+			System.out.println("user dao rate author: "+e.getMessage());
+			return "You have already rated this author";
+		}
+	}
 }
