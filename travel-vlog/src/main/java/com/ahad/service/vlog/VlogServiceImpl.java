@@ -58,5 +58,24 @@ public class VlogServiceImpl implements VlogService{
 	public Vlog getVlog(int vlogId) {
 		return vlogDao.getVlog(vlogId);
 	}
+
+	@Override
+	public String rateVlog(int vlogId, int rating, String email) {
+		try {
+			vlogDao.rateVlog(vlogId,rating,email);
+			return "Your rating has been stored succesfully";
+		}catch(Exception e) {
+			return "You have already rate this vlog";
+		}
+	}
+
+	@Override
+	public Map<String, Object> getVlogRating(int vlogId) {
+		Map<String,Object> ratingMap = vlogDao.getVlogRating(vlogId);
+		if(ratingMap.get("avg_rating") == null) {
+			ratingMap.put("avg_rating", "N/A");
+		}
+		return ratingMap;
+	}
 	
 }

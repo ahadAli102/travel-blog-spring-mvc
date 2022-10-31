@@ -31,13 +31,13 @@ public class VlogController {
 	
 	@RequestMapping(path = "/{vlogId}",method = RequestMethod.GET)
 	public ModelAndView displaySIngleVlog(@ModelAttribute("login_user") User user, @PathVariable("vlogId") int vlogId) {
-		System.gc();
 		ModelAndView modelAndView = new ModelAndView();
 		if(user.getEmail()==null) {
 			modelAndView.setViewName("redirect:/login");
 		}else {
 			modelAndView.setViewName("vlog");
 			modelAndView.addObject("display_single_vlog",vlogService.getVlog(vlogId));
+			modelAndView.addObject("vlog_rating_info", vlogService.getVlogRating(vlogId));
 		}
 		return modelAndView;
 	}
@@ -73,6 +73,24 @@ public class VlogController {
 			vlogService.addVlog(vlog, images, videos, user.getEmail());
 			System.out.println("my upload vlog added");
 			System.out.println("my upload vlog page showed");
+		}
+		return modelAndView;
+	}
+	
+	@RequestMapping(path = "/rate-vlog", method= RequestMethod.POST)
+	public ModelAndView rateVlog(
+			@RequestParam("vlogId") int vlogId,
+			@RequestParam("rating") int rating, 
+			@ModelAttribute("login_user") User user,
+			HttpServletRequest req) {
+		
+		ModelAndView modelAndView = new ModelAndView();
+		System.out.println("vlogs my = "+user);
+		if(user.getEmail()==null) {
+			modelAndView.setViewName("redirect:/login");
+		}else {
+			modelAndView.setViewName("redirect:/vlogs/"+vlogId);
+			req.getSession().setAttribute("rate_vlog_status", vlogService.rateVlog(vlogId,rating,user.getEmail()));
 		}
 		return modelAndView;
 	}

@@ -12,4 +12,8 @@ public interface VlogDao {
 	public Map<String, Vlog> getUserVlogs(String email);
 
 	public Vlog getVlog(int vlogId);
+
+	public int rateVlog(int vlogId, int rating, String email);
+
+	public Map<String, Object> getVlogRating(int vlogId);
 }

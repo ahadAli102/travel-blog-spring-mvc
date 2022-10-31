@@ -60,6 +60,9 @@ public class VlogDaoImpl implements VlogDao {
 			"INNER JOIN vlog_videos_table ON vlog_videos_table.vlogId = vlog_images_table.vlogId AND vlog_table.id = ? \n" + 
 			"INNER JOIN profile_image ON profile_image.email = user_table.email AND profile_image.id = (SELECT MAX(profile_image.id) FROM profile_image GROUP BY profile_image.email) \n" + 
 			"GROUP BY vlog_images_table.url, vlog_videos_table.url;";
+	private static final String RATE_VLOG = "INSERT INTO `vlog_rating_table`(`vlog_id`, `rater_email`, `rating`) VALUES (?, ?, ?)";
+	private static final String RATING_OF_VLOG = "SELECT AVG(vlog_rating_table.rating) AS avg_rating, COUNT(vlog_rating_table.vlog_id) AS total_votes FROM vlog_rating_table WHERE vlog_rating_table.vlog_id = ?;";
+	
 	@Override
 	@Transactional
 	public void addVlog(Vlog vlog, CommonsMultipartFile[] images, CommonsMultipartFile[] videos, String email) {
@@ -247,5 +250,15 @@ public class VlogDaoImpl implements VlogDao {
 				return vlog;
 			}
 		},new Object[] {vlogId});
+	}
+
+	@Override
+	public int rateVlog(int vlogId, int rating, String email) {
+		return jdbcTemplate.update(RATE_VLOG, vlogId,email,rating);
+	}
+
+	@Override
+	public Map<String, Object> getVlogRating(int vlogId) {
+		return jdbcTemplate.queryForMap(RATING_OF_VLOG, vlogId);
 	}
 }
