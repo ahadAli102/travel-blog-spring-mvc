@@ -10,4 +10,6 @@ public interface VlogDao {
 	public void addVlog(Vlog vlog, CommonsMultipartFile[] images, CommonsMultipartFile[] videos, String email);
 
 	public Map<String, Vlog> getUserVlogs(String email);
+
+	public Vlog getVlog(int vlogId);
 }

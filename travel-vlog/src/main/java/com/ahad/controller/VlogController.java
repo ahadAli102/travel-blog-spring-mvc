@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,6 +28,19 @@ import com.ahad.service.vlog.VlogService;
 public class VlogController {
 	@Autowired
 	private VlogService vlogService;
+	
+	@RequestMapping(path = "/{vlogId}",method = RequestMethod.GET)
+	public ModelAndView displaySIngleVlog(@ModelAttribute("login_user") User user, @PathVariable("vlogId") int vlogId) {
+		System.gc();
+		ModelAndView modelAndView = new ModelAndView();
+		if(user.getEmail()==null) {
+			modelAndView.setViewName("redirect:/login");
+		}else {
+			modelAndView.setViewName("vlog");
+			modelAndView.addObject("display_single_vlog",vlogService.getVlog(vlogId));
+		}
+		return modelAndView;
+	}
 	
 	@RequestMapping(path = "/my",method = RequestMethod.GET)
 	public ModelAndView getRegPage(@ModelAttribute("login_user") User user) {
@@ -62,6 +76,8 @@ public class VlogController {
 		}
 		return modelAndView;
 	}
+	
+	
 	
 	@ExceptionHandler(value=VlogException.class)
 	public ModelAndView vlogExceptionHandle(VlogException exception,HttpServletRequest req) {

@@ -6,7 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Base64;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +43,23 @@ public class VlogDaoImpl implements VlogDao {
 			+ "INNER JOIN vlog_videos_table ON vlog_videos_table.vlogId = vlog_images_table.vlogId  \n"
 			+ "INNER JOIN profile_image ON profile_image.email = user_table.email  AND profile_image.id = (SELECT MAX(profile_image.id) FROM profile_image GROUP BY profile_image.email) \n"
 			+ "GROUP BY (vlog_table.id) \n" + "ORDER BY vlog_table.id DESC;";
-
+	private static final String GET_SINGLE_VLOG 
+	        = "SELECT \n" + 
+			"    vlog_table.id, \n" + 
+			"    vlog_table.location, \n" + 
+			"    vlog_table.description, \n" + 
+			"    vlog_images_table.url AS vlog_image, \n" + 
+			"    vlog_videos_table.url AS vlog_video, \n" + 
+			"    user_table.name, \n" + 
+			"    user_table.email, \n" + 
+			"    profile_image.name AS user_image_name \n" + 
+			"FROM \n" + 
+			"    user_table \n" + 
+			"INNER JOIN vlog_table ON vlog_table.eamil = user_table.email \n" + 
+			"INNER JOIN vlog_images_table ON vlog_images_table.vlogId = vlog_table.id \n" + 
+			"INNER JOIN vlog_videos_table ON vlog_videos_table.vlogId = vlog_images_table.vlogId AND vlog_table.id = ? \n" + 
+			"INNER JOIN profile_image ON profile_image.email = user_table.email AND profile_image.id = (SELECT MAX(profile_image.id) FROM profile_image GROUP BY profile_image.email) \n" + 
+			"GROUP BY vlog_images_table.url, vlog_videos_table.url;";
 	@Override
 	@Transactional
 	public void addVlog(Vlog vlog, CommonsMultipartFile[] images, CommonsMultipartFile[] videos, String email) {
@@ -180,5 +196,56 @@ public class VlogDaoImpl implements VlogDao {
 				return vlogMap;
 			}
 		}, new Object[] { email });
+	}
+
+	@Override
+	public Vlog getVlog(int vlogId) {
+		
+		return jdbcTemplate.queryForObject(GET_SINGLE_VLOG, new RowMapper<Vlog>() {
+
+			@Override
+			public Vlog mapRow(ResultSet rs, int rowNum) throws SQLException {
+				Vlog vlog = null;
+				Map<String,Boolean> imageUrlMap = new HashMap<String,Boolean>();
+				Map<String,Boolean> videoUrlMap = new HashMap<String,Boolean>();
+				while(rs.next()) {
+					if(vlog == null) {
+						vlog = new Vlog();
+						String userImage = rs.getString("user_image_name");
+						int id = rs.getInt("id");
+						vlog.setId(id);
+						User user = new User();
+						user.setImage(userImage);
+						user.setName(rs.getString("name"));
+						user.setEmail(rs.getString("email"));
+						user.setImage(userImage);
+
+						vlog.setId(rs.getInt("id"));
+						vlog.setLocation(rs.getString("location"));
+						vlog.setDescription(rs.getString("description"));
+						vlog.setUser(user);
+						System.out.println("vlog dao single vlog: "+user+"  image: "+user.getImage());
+					}
+
+					String vlogImage = rs.getString("vlog_image");
+					String vlogVideo = rs.getString("vlog_video");
+					
+					if(!imageUrlMap.containsKey(vlogImage))
+						imageUrlMap.put(vlogImage, true);
+					if(!videoUrlMap.containsKey(vlogVideo))
+						videoUrlMap.put(vlogVideo, true);
+				}
+				if(vlog!=null) {
+					List<String> imageUrl = new ArrayList<String>(imageUrlMap.size());
+					imageUrl.addAll(imageUrlMap.keySet());
+					vlog.setImageUrl(imageUrl);
+					
+					List<String> videoUrl = new ArrayList<String>(videoUrlMap.size());
+					videoUrl.addAll(videoUrlMap.keySet());
+					vlog.setVideoUrl(videoUrl);
+				}
+				return vlog;
+			}
+		},new Object[] {vlogId});
 	}
 }

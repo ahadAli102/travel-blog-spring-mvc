@@ -53,5 +53,10 @@ public class VlogServiceImpl implements VlogService{
 		}
 		return userVlogs;
 	}
+
+	@Override
+	public Vlog getVlog(int vlogId) {
+		return vlogDao.getVlog(vlogId);
+	}
 	
 }
