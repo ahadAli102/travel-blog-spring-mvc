@@ -16,4 +16,5 @@ public interface VlogService {
 	public Map<String, Object> getVlogRating(int vlogId);
 	public Map<String,Object> getUserVlogRating(String email);
 	public void deleteVlog(int vlogId);
+	public String saveComment(String comment, int vlogId, String email);
 }

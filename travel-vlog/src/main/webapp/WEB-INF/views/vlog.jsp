@@ -33,7 +33,7 @@ body {
 	<%
 		Vlog vlog =(Vlog) request.getAttribute("display_single_vlog");
 		Map<String,Object> ratingMap = (Map<String,Object>) request.getAttribute("vlog_rating_info");
-		
+		String email = ((User) request.getSession().getAttribute("login_user")).getEmail();
 	%>
 	<div class="container pt-1 pb-3">
 
@@ -45,7 +45,6 @@ body {
 					<p class="mb-2 pb-1" style="color: #2b2a2a;"><%=vlog.getDescription() %></p>
 				</div>
 				<%
-				String email = ((User) request.getSession().getAttribute("login_user")).getEmail();
 				if(vlog.getUser().getEmail().equals(email)){%>
 					<form action="/travel-vlog/vlogs/delete" class="p-2" method="post">
 						<input type="hidden" name="vlogId" value="<%=vlog.getId()%>" />
@@ -170,6 +169,40 @@ body {
 					</div>
 			</form>
 		</div>
+		
+		<div class="row d-flex justify-content-center">
+		  <div class="col-md-8 col-lg-6">
+		    <div class="card shadow-0 border" style="background-color: #f0f2f5;">
+		      <div class="card-body p-4">
+		        <form class="form-outline mb-4" method="post" action="/travel-vlog/vlogs/<%=vlog.getId()%>/comment">
+		          <input type="text" id="addANote" name="comment" class="form-control" placeholder="Type comment..." />
+		          <label class="form-label" for="addANote">Add you thought</label>
+		          <input type="submit" value="POST"
+							class="btn btn-primary btn-lg mt-1" />
+		        </form>
+		
+		        <div class="card mb-4">
+		          <div class="card-body">
+		          <div class="d-flex justify-content-between">
+		              <div class="d-flex flex-row align-items-center">
+		                <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(4).webp" alt="avatar" width="25"
+		                  height="25" />
+		                <p class="small mb-0 ms-2">Martha</p>
+		              </div>
+		              <div class="d-flex flex-row align-items-center">
+		                <p class="small text-muted mb-0">Upvote?</p>
+		                <i class="far fa-thumbs-up mx-2 fa-xs text-black" style="margin-top: -0.16rem;"></i>
+		                <p class="small text-muted mb-0">3</p>
+		              </div>
+		            </div>
+		            <p>Type your note, and hit enter to add it</p>
+		          </div>
+		        </div>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+
 	</div>
 
 

@@ -92,6 +92,7 @@ public class VlogDaoImpl implements VlogDao {
 			"JOIN vlog_rating_table ON vlog_rating_table.vlog_id = vlog_table.id AND vlog_table.eamil = ?;";
 	
 	private static final String DELETE_VLOG = "DELETE FROM `vlog_table` WHERE `vlog_table`.`id` = ?";
+	private static final String SAVE_VLOG_COMMENT = "INSERT INTO `vlog_comment_table`(`comment`, `vlog_id`, `user_email`, `time`) VALUES (?, ?, ?, ?);";
 	
 	@Override
 	@Transactional
@@ -299,5 +300,10 @@ public class VlogDaoImpl implements VlogDao {
 	@Override
 	public void deleteVlog(int vlogId) {
 		jdbcTemplate.update(DELETE_VLOG,vlogId);
+	}
+
+	@Override
+	public int saveComment(String comment, int vlogId, String email) {
+		return jdbcTemplate.update(SAVE_VLOG_COMMENT, comment,vlogId,email,System.currentTimeMillis());
 	}
 }

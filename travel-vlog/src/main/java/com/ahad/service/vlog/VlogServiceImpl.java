@@ -91,5 +91,14 @@ public class VlogServiceImpl implements VlogService{
 	public void deleteVlog(int vlogId) {
 		vlogDao.deleteVlog(vlogId);
 	}
+
+	@Override
+	public String saveComment(String comment, int vlogId, String email) {
+		if(vlogDao.saveComment(comment, vlogId, email)>=1) {
+			return "Comment added";
+		}else {
+			return "comment not added";
+		}
+	}
 	
 }

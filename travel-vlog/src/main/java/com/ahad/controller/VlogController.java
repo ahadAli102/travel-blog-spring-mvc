@@ -34,7 +34,7 @@ public class VlogController {
 	private UserService userService;
 	
 	@RequestMapping(path = "/{vlogId}",method = RequestMethod.GET)
-	public ModelAndView displaySIngleVlog(@ModelAttribute("login_user") User user, @PathVariable("vlogId") int vlogId) {
+	public ModelAndView displaySingleVlog(@ModelAttribute("login_user") User user, @PathVariable("vlogId") int vlogId) {
 		ModelAndView modelAndView = new ModelAndView();
 		if(user.getEmail()==null) {
 			modelAndView.setViewName("redirect:/login");
@@ -131,6 +131,21 @@ public class VlogController {
 		}else {
 			vlogService.deleteVlog(vlogId);
 			modelAndView.setViewName("redirect:/vlogs/my");
+		}
+		return modelAndView;
+	}
+	
+	@RequestMapping(path = "/{vlogId}/comment",method = RequestMethod.POST)
+	public ModelAndView saveComment(
+			@ModelAttribute("login_user") User user, 
+			@PathVariable("vlogId") int vlogId,
+			@RequestParam("comment") String comment) {
+		ModelAndView modelAndView = new ModelAndView();
+		if(user.getEmail()==null) {
+			modelAndView.setViewName("redirect:/login");
+		}else {
+			modelAndView.setViewName("redirect:/vlogs/"+vlogId);
+			modelAndView.addObject("comment_post",vlogService.saveComment(comment,vlogId,user.getEmail()));
 		}
 		return modelAndView;
 	}

@@ -20,4 +20,6 @@ public interface VlogDao {
 	public Map<String, Object> getUserVlogRating(String email);
 
 	public void deleteVlog(int vlogId);
+
+	public int saveComment(String comment, int vlogId, String email);
 }
