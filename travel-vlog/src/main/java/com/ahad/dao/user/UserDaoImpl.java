@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ public class UserDaoImpl implements UserDao {
 	
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
+	
 	private static final String GET_USER_IMAGE = "SELECT * FROM profile_image WHERE profile_image.email=? ORDER BY profile_image.id DESC LIMIT 1";
 	private static final String INSERT_IMAGE = "INSERT INTO `profile_image` (`id`, `name`,  `email`) VALUES (NULL, ?, ?)";
 	private static final String RATE_AUTHOR = "INSERT INTO `author_rating_table`(`author_email`, `rater_email`, `rating`) VALUES (?, ?, ?)";
@@ -68,5 +70,9 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public void rateAuthor(int rating, String authorEmail, String raterEmail) {
 		jdbcTemplate.update(RATE_AUTHOR, authorEmail, raterEmail, rating);
+	}
+	@Override
+	public Map<String, Object> getUserRating(String email) {
+		return jdbcTemplate.queryForMap(USER_RATING, email);
 	}
 }

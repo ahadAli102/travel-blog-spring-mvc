@@ -268,4 +268,9 @@ public class VlogDaoImpl implements VlogDao {
 	public Map<String, Object> getVlogRating(int vlogId) {
 		return jdbcTemplate.queryForMap(RATING_OF_VLOG, vlogId);
 	}
+
+	@Override
+	public Map<String, Object> getUserVlogRating(String email) {
+		return jdbcTemplate.queryForMap(USER_VLOG_RATING, email);
+	}
 }

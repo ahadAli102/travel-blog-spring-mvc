@@ -1,5 +1,7 @@
 package com.ahad.service.user;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -41,5 +43,14 @@ public class UserServiceImpl implements UserService {
 			System.out.println("user dao rate author: "+e.getMessage());
 			return "You have already rated this author";
 		}
+	}
+
+	@Override
+	public Map<String, Object> getUserRating(String email) {
+		Map<String, Object> userRating = dao.getUserRating(email);
+		if(userRating.get("author_avg_rating") == null) {
+			userRating.put("author_avg_rating", "N/A");
+		}
+		return userRating;
 	}
 }

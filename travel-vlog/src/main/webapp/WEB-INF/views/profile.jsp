@@ -29,7 +29,8 @@ body {
 <body>
 	<%
 		User user =(User) request.getSession().getAttribute("login_user");
-		Map<String, Object> rating = null;
+		Map<String, Object> userRating = (Map<String,Object>) request.getAttribute("user_profile_rating_map");
+		Map<String, Object> userVlogRating = (Map<String,Object>) request.getAttribute("user_vlog_rating_map");
 		String myImage = String.valueOf(request.getAttribute("image"));
 	
 	%>
@@ -51,23 +52,19 @@ body {
 								style="background-color: #efefef;">
 								<div>
 									<p class="small text-muted mb-1">Vlogs</p>
-									<p class="mb-0"><%= 50%></p>
-								</div>
-								<div class="px-3">
-									<p class="small text-muted mb-1">Vlog Ratings</p>
-									<p class="mb-0"><%= 100%></p>
+									<p class="mb-0"><%= userVlogRating.get("total_vlogs")%></p>
 								</div>
 								<div>
 									<p class="small text-muted mb-1">Vlog Rating</p>
-									<p class="mb-0"><%= 5.10%></p>
+									<p class="mb-0"><%= userVlogRating.get("vlog_avg_rating")%></p>
 								</div>
 								<div class="px-3">
 									<p class="small text-muted mb-1">Author ratings</p>
-									<p class="mb-0"><%= 100%></p>
+									<p class="mb-0"><%= userRating.get("author_count_rating")%></p>
 								</div>
 								<div>
 									<p class="small text-muted mb-1">Author rating</p>
-									<p class="mb-0"><%= 5.10%></p>
+									<p class="mb-0"><%= userRating.get("author_avg_rating")%></p>
 								</div>
 							</div>
 							

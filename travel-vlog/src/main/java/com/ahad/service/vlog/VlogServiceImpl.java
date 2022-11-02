@@ -77,5 +77,14 @@ public class VlogServiceImpl implements VlogService{
 		}
 		return ratingMap;
 	}
+
+	@Override
+	public Map<String, Object> getUserVlogRating(String email) {
+		Map<String,Object> userVlogRating = vlogDao.getUserVlogRating(email);
+		if(userVlogRating.get("vlog_avg_rating") == null) {
+			userVlogRating.put("vlog_avg_rating", "N/A");
+		}
+		return userVlogRating;
+	}
 	
 }

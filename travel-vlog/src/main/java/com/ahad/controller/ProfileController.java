@@ -12,6 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.ahad.model.User;
 import com.ahad.service.user.UserService;
+import com.ahad.service.vlog.VlogService;
 
 @Controller
 @RequestMapping("/profile")
@@ -19,6 +20,8 @@ import com.ahad.service.user.UserService;
 public class ProfileController {
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private VlogService vlogService;
 	
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView getRegPage(@ModelAttribute("login_user") User user) {
@@ -30,6 +33,8 @@ public class ProfileController {
 		}else {
 			modelAndView.setViewName("profile");
 			modelAndView.addObject("image", userService.getImage(user));
+			modelAndView.addObject("user_profile_rating_map", userService.getUserRating(user.getEmail()));
+			modelAndView.addObject("user_vlog_rating_map", vlogService.getUserVlogRating(user.getEmail()));
 			System.out.println("profile=profile");
 		}
 		return modelAndView;
