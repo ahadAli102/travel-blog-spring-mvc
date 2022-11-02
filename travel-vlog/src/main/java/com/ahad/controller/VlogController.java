@@ -118,7 +118,22 @@ public class VlogController {
 		return modelAndView;
 	}
 	
-	
+	@RequestMapping(path = "/delete", method= RequestMethod.POST)
+	public ModelAndView deleteVlog(
+			@RequestParam("vlogId") int vlogId,
+			@ModelAttribute("login_user") User user,
+			HttpServletRequest req) {
+		
+		ModelAndView modelAndView = new ModelAndView();
+		System.out.println("vlogs delete");
+		if(user.getEmail()==null) {
+			modelAndView.setViewName("redirect:/login");
+		}else {
+			vlogService.deleteVlog(vlogId);
+			modelAndView.setViewName("redirect:/vlogs/my");
+		}
+		return modelAndView;
+	}
 	
 	@ExceptionHandler(value=VlogException.class)
 	public ModelAndView vlogExceptionHandle(VlogException exception,HttpServletRequest req) {

@@ -86,5 +86,10 @@ public class VlogServiceImpl implements VlogService{
 		}
 		return userVlogRating;
 	}
+
+	@Override
+	public void deleteVlog(int vlogId) {
+		vlogDao.deleteVlog(vlogId);
+	}
 	
 }

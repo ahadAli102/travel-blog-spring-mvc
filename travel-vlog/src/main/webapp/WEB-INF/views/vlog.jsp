@@ -44,6 +44,16 @@ body {
 					<h5 class="mb-1"><%=vlog.getUser().getName() %></h5>
 					<p class="mb-2 pb-1" style="color: #2b2a2a;"><%=vlog.getDescription() %></p>
 				</div>
+				<%
+				String email = ((User) request.getSession().getAttribute("login_user")).getEmail();
+				if(vlog.getUser().getEmail().equals(email)){%>
+					<form action="/travel-vlog/vlogs/delete" class="p-2" method="post">
+						<input type="hidden" name="vlogId" value="<%=vlog.getId()%>" />
+						<input type="submit" value="DELETE"
+						class="btn btn-primary btn-lg" />
+					</form>
+				
+				<%}%>
 				<div id="carouselExampleIndicators" class="carousel slide"
 					data-bs-ride="true">
 					<div class="carousel-indicators">

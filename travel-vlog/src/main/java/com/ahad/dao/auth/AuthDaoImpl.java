@@ -1,10 +1,12 @@
 package com.ahad.dao.auth;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,15 +27,29 @@ public class AuthDaoImpl implements AuthDao {
 	public static final String CREATE_NEW_CREDENTIAL = "INSERT INTO `reset_password_table`(`email`, `credential`, `complete`) VALUES (?, ?, '0')";
 	public static final String VALIDATE_USER_PASSWORD_CREDENTIAL = "SELECT count(email) AS number FROM `reset_password_table` WHERE `reset_password_table`.`email` = ? AND `reset_password_table`.`credential` = ? AND `reset_password_table`.`complete` = 0 ORDER BY `reset_password_table`.`time` DESC LIMIT 1"; 
 	public static final String COMPLETE_USER_PASSWORD_CREDENTIAL = "UPDATE `reset_password_table` SET `reset_password_table`.`complete` = 1 WHERE `reset_password_table`.`email` = ? AND `reset_password_table`.`credential` = ?"; 
+	private static final String INSERT_IMAGE = "INSERT INTO `profile_image` (`id`, `name`,  `email`) VALUES (NULL, ?, ?)";
 	
 	@Override
+	@Transactional
 	public int registerUser(User user) {
 		System.out.println("dao regestering user " + this);
 		try {
+			saveProfileImage("blank-profile-picture.png", user.getEmail());
 			return jdbcTemplate.update(INSERT_QUERY, user.getEmail(), user.getName(), user.getPassword(), 0);
 		} catch (Exception e) {
 			return 0;
 		}
+	}
+	
+	public int saveProfileImage(String fileName, String email) {
+		return jdbcTemplate.update(INSERT_IMAGE, new PreparedStatementSetter() {
+			@Override
+			public void setValues(PreparedStatement ps) throws SQLException {
+				ps.setString(1, fileName);
+				ps.setString(2, email);
+				
+			}
+		});
 	}
 
 	@Override

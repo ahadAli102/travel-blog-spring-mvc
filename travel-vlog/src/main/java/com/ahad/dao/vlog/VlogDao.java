@@ -18,4 +18,6 @@ public interface VlogDao {
 	public Map<String, Object> getVlogRating(int vlogId);
 
 	public Map<String, Object> getUserVlogRating(String email);
+
+	public void deleteVlog(int vlogId);
 }
