@@ -1,9 +1,11 @@
 package com.ahad.dao.vlog;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import com.ahad.model.Comment;
 import com.ahad.model.Vlog;
 
 public interface VlogDao {
@@ -22,4 +24,6 @@ public interface VlogDao {
 	public void deleteVlog(int vlogId);
 
 	public int saveComment(String comment, int vlogId, String email);
+
+	public List<Comment> getVlogComments(int vlogId);
 }

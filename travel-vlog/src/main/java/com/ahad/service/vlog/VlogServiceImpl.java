@@ -10,6 +10,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.ahad.dao.vlog.VlogDao;
 import com.ahad.exception.VlogException;
+import com.ahad.model.Comment;
 import com.ahad.model.Vlog;
 
 
@@ -99,6 +100,14 @@ public class VlogServiceImpl implements VlogService{
 		}else {
 			return "comment not added";
 		}
+	}
+
+	@Override
+	public List<Comment> getVlogComments(int vlogId) {
+		List<Comment> comments = vlogDao.getVlogComments(vlogId);
+		if(comments == null)
+			comments = new ArrayList<Comment>();
+		return comments;
 	}
 	
 }

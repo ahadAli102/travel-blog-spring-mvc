@@ -18,8 +18,7 @@ public class FileServlet extends HttpServlet {
 	@Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException
-    {
-    	
+    {	
         String filename = request.getParameter("fileName");
         File file = new File("G:/eclips-spring-mvc/travel-vlog-content/"+filename);
         System.out.println("file servlet : "+filename+"locatoin "+file.getPath());

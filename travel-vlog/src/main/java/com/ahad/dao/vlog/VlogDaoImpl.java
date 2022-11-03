@@ -15,6 +15,7 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import com.ahad.model.Comment;
 import com.ahad.model.User;
 import com.ahad.model.Vlog;
 
@@ -93,7 +95,27 @@ public class VlogDaoImpl implements VlogDao {
 	
 	private static final String DELETE_VLOG = "DELETE FROM `vlog_table` WHERE `vlog_table`.`id` = ?";
 	private static final String SAVE_VLOG_COMMENT = "INSERT INTO `vlog_comment_table`(`comment`, `vlog_id`, `user_email`, `time`) VALUES (?, ?, ?, ?);";
-	
+	private static final String GET_VLOG_COMMENTS = 
+			"SELECT \n" + 
+			"	vlog_comment_table.id AS id, \n" + 
+			"    vlog_comment_table.comment AS comment, \n" + 
+			"    vlog_comment_table.time AS time, \n" + 
+			"    user_table.name AS commenterName, \n" + 
+			"    profile_image.name AS commenterImage \n" + 
+			"FROM \n" + 
+			"    vlog_comment_table \n" + 
+			"JOIN user_table ON user_table.email = vlog_comment_table.user_email AND vlog_comment_table.vlog_id = ? \n" + 
+			"JOIN profile_image ON profile_image.email = user_table.email AND profile_image.id =( \n" + 
+			"    SELECT \n" + 
+			"        MAX(profile_image.id) \n" + 
+			"    FROM \n" + 
+			"        profile_image \n" + 
+			"    WHERE \n" + 
+			"        profile_image.email = vlog_comment_table.user_email \n" + 
+			") \n" + 
+			"ORDER BY \n" + 
+			"    vlog_comment_table.id \n" + 
+			"DESC;";
 	@Override
 	@Transactional
 	public void addVlog(Vlog vlog, CommonsMultipartFile[] images, CommonsMultipartFile[] videos, String email) {
@@ -305,5 +327,10 @@ public class VlogDaoImpl implements VlogDao {
 	@Override
 	public int saveComment(String comment, int vlogId, String email) {
 		return jdbcTemplate.update(SAVE_VLOG_COMMENT, comment,vlogId,email,System.currentTimeMillis());
+	}
+
+	@Override
+	public List<Comment> getVlogComments(int vlogId) {
+		return jdbcTemplate.query(GET_VLOG_COMMENTS, new BeanPropertyRowMapper<Comment>(Comment.class),vlogId);
 	}
 }

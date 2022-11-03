@@ -42,6 +42,7 @@ public class VlogController {
 			modelAndView.setViewName("vlog");
 			modelAndView.addObject("display_single_vlog",vlogService.getVlog(vlogId));
 			modelAndView.addObject("vlog_rating_info", vlogService.getVlogRating(vlogId));
+			modelAndView.addObject("vlog_comments",vlogService.getVlogComments(vlogId));
 		}
 		return modelAndView;
 	}

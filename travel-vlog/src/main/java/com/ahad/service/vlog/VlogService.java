@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import com.ahad.model.Comment;
 import com.ahad.model.Vlog;
 
 public interface VlogService {
@@ -17,4 +18,5 @@ public interface VlogService {
 	public Map<String,Object> getUserVlogRating(String email);
 	public void deleteVlog(int vlogId);
 	public String saveComment(String comment, int vlogId, String email);
+	public List<Comment> getVlogComments(int vlogId);
 }
