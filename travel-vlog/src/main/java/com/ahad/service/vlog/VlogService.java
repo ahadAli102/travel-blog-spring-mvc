@@ -11,6 +11,7 @@ import com.ahad.model.Vlog;
 public interface VlogService {
 
 	public void addVlog(Vlog vlog, CommonsMultipartFile[] images, CommonsMultipartFile[] videos, String email);
+	public List<Vlog> getAllVlogs(int pageNo);
 	public List<Vlog> getUserVlogs(String email);
 	public List<Vlog> getUserVlogs(String email, String query);
 	public Vlog getVlog(int vlogId);

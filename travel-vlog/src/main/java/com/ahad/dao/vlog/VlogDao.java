@@ -10,6 +10,8 @@ import com.ahad.model.Vlog;
 
 public interface VlogDao {
 	public void addVlog(Vlog vlog, CommonsMultipartFile[] images, CommonsMultipartFile[] videos, String email);
+	
+	public Map<String, Vlog> getAllVlogs(int offset, int limit);
 
 	public Map<String, Vlog> getUserVlogs(String email);
 
@@ -28,4 +30,5 @@ public interface VlogDao {
 	public List<Comment> getVlogComments(int vlogId);
 
 	public Map<String, Vlog> getUserVlogs(String email, String query);
+
 }

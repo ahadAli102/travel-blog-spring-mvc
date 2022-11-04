@@ -40,6 +40,24 @@ public class VlogServiceImpl implements VlogService{
 	}
 
 	@Override
+	public List<Vlog> getAllVlogs(int pageNo) {
+		int limit = 4;
+		int offset = (pageNo-1)*limit;
+		Map<String, Vlog> vlogMap = vlogDao.getAllVlogs(offset,limit);
+		List<Vlog> allVlogs = new ArrayList<Vlog>(vlogMap.size());
+		if(vlogMap!=null) {
+			for(String key : vlogMap.keySet()) {
+				Vlog vlog = vlogMap.get(key);
+				allVlogs.add(vlog);
+				System.out.println(vlog);
+				System.out.println(vlog.getImageUrl().get(0));
+				System.out.println(vlog.getVideoUrl().get(0)+"\n\n\n");
+			}
+		}
+		return allVlogs;
+	}
+	
+	@Override
 	public List<Vlog> getUserVlogs(String email) {
 		Map<String, Vlog> vlogMap = vlogDao.getUserVlogs(email);
 		List<Vlog> userVlogs = new ArrayList<Vlog>(vlogMap.size());
@@ -127,5 +145,4 @@ public class VlogServiceImpl implements VlogService{
 			comments = new ArrayList<Comment>();
 		return comments;
 	}
-	
 }
