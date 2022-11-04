@@ -26,4 +26,6 @@ public interface VlogDao {
 	public int saveComment(String comment, int vlogId, String email);
 
 	public List<Comment> getVlogComments(int vlogId);
+
+	public Map<String, Vlog> getUserVlogs(String email, String query);
 }

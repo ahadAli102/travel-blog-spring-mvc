@@ -48,7 +48,7 @@ public class VlogController {
 	}
 	
 	@RequestMapping(path = "/my",method = RequestMethod.GET)
-	public ModelAndView getRegPage(@ModelAttribute("login_user") User user) {
+	public ModelAndView getUserVlogs(@ModelAttribute("login_user") User user) {
 		System.gc();
 		ModelAndView modelAndView = new ModelAndView();
 		System.out.println("vlogs my = "+user);
@@ -57,6 +57,20 @@ public class VlogController {
 		}else {
 			modelAndView.setViewName("my_vlog");
 			modelAndView.addObject("user_vlogs",vlogService.getUserVlogs(user.getEmail()));
+		}
+		return modelAndView;
+	}
+	
+	@RequestMapping(path = "/my", params = "q", method = RequestMethod.GET)
+	public ModelAndView getUserVlogs(@ModelAttribute("login_user") User user, @RequestParam("q") String query) {
+		System.gc();
+		ModelAndView modelAndView = new ModelAndView();
+		System.out.println("vlogs my = "+user);
+		if(user.getEmail()==null) {
+			modelAndView.setViewName("redirect:/login");
+		}else {
+			modelAndView.setViewName("my_vlog");
+			modelAndView.addObject("user_vlogs",vlogService.getUserVlogs(user.getEmail(), query));
 		}
 		return modelAndView;
 	}

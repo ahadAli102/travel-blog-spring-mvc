@@ -63,6 +63,40 @@ public class VlogDaoImpl implements VlogDao {
 			"    (vlog_table.id) \n" + 
 			"ORDER BY \n" + 
 			"    vlog_table.id DESC;";
+	
+	private static final String GET_USER_VLOGS_FILTERED = 
+			"SELECT \n" + 
+			"    vlog_table.id, \n" + 
+			"    vlog_table.location, \n" + 
+			"    vlog_table.description, \n" + 
+			"    vlog_images_table.url AS vlog_image, \n" + 
+			"    vlog_videos_table.url AS vlog_video, \n" + 
+			"    user_table.name, \n" + 
+			"    user_table.email, \n" + 
+			"    profile_image.name AS user_image_name \n" + 
+			"FROM \n" + 
+			"    user_table \n" + 
+			"INNER JOIN vlog_table ON vlog_table.eamil = user_table.email AND( \n" + 
+			"        vlog_table.eamil = ? AND( \n" + 
+			"            vlog_table.description LIKE ? OR vlog_table.location LIKE ? \n" + 
+			"        ) \n" + 
+			"    ) \n" + 
+			"INNER JOIN vlog_images_table ON vlog_images_table.vlogId = vlog_table.id \n" + 
+			"INNER JOIN vlog_videos_table ON vlog_videos_table.vlogId = vlog_images_table.vlogId \n" + 
+			"INNER JOIN profile_image ON profile_image.email = user_table.email AND profile_image.id =( \n" + 
+			"    SELECT \n" + 
+			"        MAX(profile_image.id) \n" + 
+			"    FROM \n" + 
+			"        profile_image \n" + 
+			"    WHERE \n" + 
+			"        profile_image.email = ? \n" + 
+			") \n" + 
+			"GROUP BY \n" + 
+			"    (vlog_table.id) \n" + 
+			"ORDER BY \n" + 
+			"    vlog_table.id \n" + 
+			"DESC \n" + 
+			"    ;";
 		
 	private static final String GET_SINGLE_VLOG 
 		   ="SELECT \n" + 
@@ -248,6 +282,56 @@ public class VlogDaoImpl implements VlogDao {
 				return vlogMap;
 			}
 		}, new Object[] { email, email });
+	}
+	
+	@Override
+	public Map<String, Vlog> getUserVlogs(String email, String query) {
+		String like = new StringBuilder().append("%").append(query).append("%").toString();
+		System.out.println("vlog dao get user filter vlogs like:"+like);
+		return jdbcTemplate.query(GET_USER_VLOGS_FILTERED, new ResultSetExtractor<Map<String, Vlog>>() {
+
+			@Override
+			public Map<String, Vlog> extractData(ResultSet rs) throws SQLException, DataAccessException {
+				Map<String, Vlog> vlogMap = new LinkedHashMap<String, Vlog>();
+				System.out.println("vlog dao get user filter vlogs response");
+				while (rs.next()) {
+					int id = rs.getInt("id");
+					System.out.println("vlog dao get user filter vlogs respone:"+id);
+					String vlogImage = rs.getString("vlog_image");
+					String vlogVideo = rs.getString("vlog_video");
+
+					if (vlogMap.containsKey("" + id)) {
+						vlogMap.get("" + id).getImageUrl().add(vlogImage);
+						vlogMap.get("" + id).getVideoUrl().add(vlogVideo);
+					} else {
+						String userImage = rs.getString("user_image_name");
+						Vlog vlog = new Vlog();
+						vlog.setId(id);
+						List<String> imageUrl = new ArrayList<String>();
+						List<String> videoUrl = new ArrayList<String>();
+						User user = new User();
+
+//						id location description vlog_image_type vlog_image vlog_video_type vlog_video name email
+//						user_image profile_image_type
+						user.setName(rs.getString("name"));
+						user.setEmail(rs.getString("email"));
+						user.setImage(userImage);
+
+						vlog.setId(rs.getInt("id"));
+						vlog.setLocation(rs.getString("location"));
+						vlog.setDescription(rs.getString("description"));
+						vlog.setUser(user);
+
+						imageUrl.add(vlogImage);
+						videoUrl.add(vlogVideo);
+						vlog.setImageUrl(imageUrl);
+						vlog.setVideoUrl(videoUrl);
+						vlogMap.put("" + id, vlog);
+					}
+				}
+				return vlogMap;
+			}
+		}, new Object[] { email, like, like, email });
 	}
 
 	@Override

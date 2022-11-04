@@ -34,9 +34,9 @@
 						href="http://localhost:8080/travel-vlog/vlogs/my">My Vlog</a></li>
 
 				</ul>
-				<form class="d-flex" action="/travel-vlog/profile">
+				<form class="d-flex" action="/travel-vlog/vlogs/my" method="get">
 					<input class="form-control me-2" type="search" placeholder="Search"
-						aria-label="Search" name="vlog">
+						aria-label="Search" name="q">
 					<button class="btn btn-outline-success me-2" type="submit">Search</button>
 				</form>
 				<form class="ml-2" method="get" action="/travel-vlog/logout">

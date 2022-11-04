@@ -12,6 +12,7 @@ public interface VlogService {
 
 	public void addVlog(Vlog vlog, CommonsMultipartFile[] images, CommonsMultipartFile[] videos, String email);
 	public List<Vlog> getUserVlogs(String email);
+	public List<Vlog> getUserVlogs(String email, String query);
 	public Vlog getVlog(int vlogId);
 	public String rateVlog(int vlogId, int rating, String email);
 	public Map<String, Object> getVlogRating(int vlogId);
