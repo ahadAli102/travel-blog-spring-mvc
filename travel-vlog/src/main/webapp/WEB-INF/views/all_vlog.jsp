@@ -38,6 +38,13 @@ body {
 		int current = (Integer) request.getAttribute("current_page");
 		int next = (Integer) request.getAttribute("next_page");
 		System.out.println(previous+"-"+current+"-"+next);
+		String query = null;
+		if(request.getAttribute("all_vlogs_query") != null){
+			query = new StringBuffer().append("&q=").append(request.getAttribute("all_vlogs_query").toString()).toString();
+		}
+		else{
+			query="";
+		}
 	%>
 	<div class="container pt-1 pb-3">
 		<div class="row mt-2">
@@ -92,19 +99,19 @@ body {
 			<div class="card-body d-flex" >
 				<%if(previous==0){ %>
 					<a class="nav-link disabled" aria-current="page"
-						href="http://localhost:8080/travel-vlog/home?page=<%=previous %>"> Previous</a>
+						href="http://localhost:8080/travel-vlog/home?page=<%=previous+query %>"> Previous</a>
 				<%}else { %>
 					<a class="nav-link active" aria-current="page"
-						href="http://localhost:8080/travel-vlog/home?page=<%=previous %>"> Previous</a>
+						href="http://localhost:8080/travel-vlog/home?page=<%=previous+query %>"> Previous</a>
 				<%} %>
 				
 				<h3> <%=current %>  </h3>
 				<%if(vlogs.size()==4){ %>
 					<a class="nav-link active" aria-current="page"
-						href="http://localhost:8080/travel-vlog/home?page=<%=next %>"> Next</a>
+						href="http://localhost:8080/travel-vlog/home?page=<%=next+query %>"> Next</a>
 				<%} else{%>
 					<a class="nav-link disabled" aria-current="page"
-						href="http://localhost:8080/travel-vlog/home?page=<%=next %>"> Next</a>
+						href="http://localhost:8080/travel-vlog/home?page=<%=next+query %>"> Next</a>
 				<%} %>
 				
 			</div>

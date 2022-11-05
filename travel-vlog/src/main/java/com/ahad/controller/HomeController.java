@@ -49,6 +49,43 @@ public class HomeController {
 		return modelAndView;
 	}
 	
+	@RequestMapping(params = {"q"},method = RequestMethod.GET)
+	public ModelAndView displaySearchVlog(@ModelAttribute("login_user") User user, @RequestParam("q") String query) {
+		System.out.println("displaySearchVlog: "+query+"-0");
+		ModelAndView modelAndView = new ModelAndView();
+		if(user.getEmail()==null) {
+			modelAndView.setViewName("redirect:/login");
+		}else {
+			int pageNo = 1;
+			modelAndView.setViewName("all_vlog");
+			modelAndView.addObject("all_vlogs",vlogService.getSearchVlogs(query,pageNo));
+			modelAndView.addObject("all_vlogs_query",query);
+			modelAndView.addObject("previous_page",pageNo-1);
+			modelAndView.addObject("current_page",pageNo);
+			modelAndView.addObject("next_page",pageNo+1);
+		}
+		return modelAndView;
+	}
+	
+	@RequestMapping(params = {"q","page"},method = RequestMethod.GET)
+	public ModelAndView displaySearchVlog(@ModelAttribute("login_user") User user, 
+			@RequestParam("q") String query, 
+			@RequestParam("page") int pageNo) {
+		System.out.println("displaySearchVlog: "+query+"-"+pageNo);
+		ModelAndView modelAndView = new ModelAndView();
+		if(user.getEmail()==null) {
+			modelAndView.setViewName("redirect:/login");
+		}else {
+			modelAndView.setViewName("all_vlog");
+			modelAndView.addObject("all_vlogs",vlogService.getSearchVlogs(query,pageNo));
+			modelAndView.addObject("all_vlogs_query",query);
+			modelAndView.addObject("previous_page",pageNo-1);
+			modelAndView.addObject("current_page",pageNo);
+			modelAndView.addObject("next_page",pageNo+1);
+		}
+		return modelAndView;
+	}
+	
 	@ModelAttribute("login_user")
 	public User populateUser() {
 		System.out.println("home populate user");

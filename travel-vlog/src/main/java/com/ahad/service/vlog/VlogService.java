@@ -14,6 +14,7 @@ public interface VlogService {
 	public List<Vlog> getAllVlogs(int pageNo);
 	public List<Vlog> getUserVlogs(String email);
 	public List<Vlog> getUserVlogs(String email, String query);
+	public List<Vlog> getSearchVlogs(String query, int pageNo);
 	public Vlog getVlog(int vlogId);
 	public String rateVlog(int vlogId, int rating, String email);
 	public Map<String, Object> getVlogRating(int vlogId);

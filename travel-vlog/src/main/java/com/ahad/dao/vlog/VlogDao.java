@@ -13,6 +13,8 @@ public interface VlogDao {
 	
 	public Map<String, Vlog> getAllVlogs(int offset, int limit);
 
+	public Map<String, Vlog> getSearchVlogs(String query, int offset, int limit);
+	
 	public Map<String, Vlog> getUserVlogs(String email);
 
 	public Vlog getVlog(int vlogId);
