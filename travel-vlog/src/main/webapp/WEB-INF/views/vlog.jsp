@@ -44,6 +44,7 @@ body {
 			<div class="card-body">
 				<div class="flex-grow-1 ms-3">
 					<h5 class="mb-1"><%=vlog.getUser().getName() %></h5>
+					<h6 class="mb-1"><%=vlog.getLocation() %></h6>
 					<p class="mb-2 pb-1" style="color: #2b2a2a;"><%=vlog.getDescription() %></p>
 				</div>
 				<%
@@ -101,6 +102,7 @@ body {
 							<span class="visually-hidden">Next</span>
 						</button>
 					</div>
+				</div>
 			</div>
 			<!-- vlog end -->
 		</div>

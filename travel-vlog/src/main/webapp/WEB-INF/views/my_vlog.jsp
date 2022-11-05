@@ -124,6 +124,7 @@ body {
 							</div>
 							<div class="flex-grow-1 ms-3">
 								<h5 class="mb-1"><%=vlog.getUser().getName() %></h5>
+								<h6 class="mb-1"><%=vlog.getLocation() %></h6>
 								<%
 									String desc = vlog.getDescription().length()<100 ?
 											vlog.getDescription() : vlog.getDescription().substring(0,90).concat(" more...");
